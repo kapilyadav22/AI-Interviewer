@@ -140,15 +140,17 @@ Built for **engineers preparing for product-based companies**.
 
 ## Project Structure
 
+```bash
 src/
-├── core/  
-├── features/  
+├── core/
+├── features/
 │ ├── ai-interview/
 │ ├── code-editor/
 │ ├── whiteboard/
 │ ├── p2p-interview/
 │ └── career-tools/
-├── shared/  
-├── services/  
-├── routes/  
+├── shared/
+├── services/
+├── routes/
 └── main.tsx
+```
