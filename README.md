@@ -107,7 +107,7 @@ Built for **engineers preparing for product-based companies**.
 
 ### Backend & Auth
 
-- Supabase (Auth + Database)
+- Firebase (Auth + Database + Storage)
 
 ### Real-Time & Media
 
@@ -142,15 +142,22 @@ Built for **engineers preparing for product-based companies**.
 
 ```bash
 src/
-├── core/
-├── features/
-│ ├── ai-interview/
-│ ├── code-editor/
-│ ├── whiteboard/
-│ ├── p2p-interview/
-│ └── career-tools/
-├── shared/
-├── services/
-├── routes/
-└── main.tsx
+├── features/           # Feature-based modular logic
+│   ├── coding/        # Code editor & compiler
+│   ├── core/          # Landing page & basic features
+│   ├── interview/     # AI & P2P interview modules
+│   ├── practice/      # Practice sets & challenges
+│   ├── resources/     # Learning materials & flashcards
+│   ├── toolkit/       # Career tools (Resume, Negotiation, etc.)
+│   └── whiteboard/    # Collaborative drawing tool
+├── shared/            # Reusable core elements
+│   ├── components/    # Reusable UI components
+│   ├── constants/     # Global constants
+│   ├── context/       # Global state management
+│   ├── data/          # Static data & mocks
+│   ├── hooks/         # Custom React hooks
+│   ├── services/      # External API & Firebase services
+│   └── utils/         # Helper functions
+├── App.jsx            # Main app router & setup
+└── main.jsx           # Application entry point
 ```
