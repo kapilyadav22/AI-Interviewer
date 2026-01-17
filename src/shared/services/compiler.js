@@ -4,6 +4,7 @@ export const LANGUAGES = {
   java: { name: "java", version: "15.0.2", label: "Java" },
   c: { name: "c", version: "10.2.0", label: "C" },
   cpp: { name: "cpp", version: "10.2.0", label: "C++" },
+  react: { name: "react", version: "18.2.0", label: "React (Sandpack)" },
 };
 
 export const DEFAULT_CODE = {
@@ -12,6 +13,7 @@ export const DEFAULT_CODE = {
   java: `// Java\npublic class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, World!");\n    }\n}\n`,
   c: `// C\n#include <stdio.h>\n\nint main() {\n    printf("Hello, World!\\n");\n    return 0;\n}\n`,
   cpp: `// C++\n#include <iostream>\n\nint main() {\n    std::cout << "Hello, World!" << std::endl;\n    return 0;\n}\n`,
+  react: `// React capabilities are powered by Sandpack\n// Select React in the dropdown to launch the environment.`,
 };
 
 export const executeCode = async (language, sourceCode, input = "") => {

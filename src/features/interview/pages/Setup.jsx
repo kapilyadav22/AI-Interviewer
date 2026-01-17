@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Layout } from "../../../shared/components/Layout";
 import {
@@ -19,7 +19,7 @@ import {
   Clock,
   Mic,
   MicOff,
-} from "lucide-react";
+} from "../../../shared/components/Icons";
 import { extractTextFromPdf } from "../../../shared/utils/pdf";
 import { SpeechService } from "../../../shared/services/speech";
 import { useToast } from "../../../shared/context/ToastContext";
@@ -30,7 +30,7 @@ export const Setup = () => {
   const navigate = useNavigate();
   const [provider, setProvider] = useState("gemini"); // 'gemini', 'openai', or 'grok'
   const [apiKey, setApiKey] = useState(
-    localStorage.getItem("gemini_api_key") || config.geminiApiKey || ""
+    localStorage.getItem("gemini_api_key") || config.geminiApiKey || "",
   );
   const [resume, setResume] = useState("");
   const [jobDesc, setJobDesc] = useState("");
@@ -57,10 +57,10 @@ export const Setup = () => {
     try {
       const text = await extractTextFromPdf(file);
       setResume(text);
-    } catch (error) {
+    } catch {
       showToast(
         "Failed to read PDF. Please try pasting the text instead.",
-        "error"
+        "error",
       );
     } finally {
       setParsingPdf(false);
@@ -83,11 +83,11 @@ export const Setup = () => {
             setJobDesc((prev) => prev + (prev ? " " : "") + text);
           }
         },
-        (err) => {
+        () => {
           // DEBUG: console.error("Dictation error:", err);
           setIsListening(false);
           setListeningTo(null);
-        }
+        },
       );
     }
   };
@@ -127,7 +127,6 @@ export const Setup = () => {
           </CardHeader>
           <form onSubmit={handleSubmit}>
             <CardBody className="space-y-6">
-              {/* AI Provider Section */}
               <div className="space-y-4">
                 <div className="flex items-center space-x-2 text-slate-900 dark:text-white font-medium">
                   <Bot className="w-5 h-5 text-primary-500" />
@@ -143,7 +142,7 @@ export const Setup = () => {
                       setApiKey(
                         localStorage.getItem("gemini_api_key") ||
                           config.geminiApiKey ||
-                          ""
+                          "",
                       );
                     } else {
                       setApiKey("");
@@ -163,8 +162,8 @@ export const Setup = () => {
                     {provider === "gemini"
                       ? "Gemini"
                       : provider === "grok"
-                      ? "Grok"
-                      : "OpenAI"}{" "}
+                        ? "Grok"
+                        : "OpenAI"}{" "}
                     API Key
                   </h3>
                 </div>
@@ -174,8 +173,8 @@ export const Setup = () => {
                     provider === "gemini"
                       ? "Gemini"
                       : provider === "grok"
-                      ? "Grok"
-                      : "OpenAI"
+                        ? "Grok"
+                        : "OpenAI"
                   } API Key`}
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
@@ -188,7 +187,6 @@ export const Setup = () => {
                 </p>
               </div>
 
-              {/* Configuration Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-4">
                   <div className="flex items-center space-x-2 text-slate-900 dark:text-white font-medium">
@@ -245,7 +243,7 @@ export const Setup = () => {
                         "transition-all duration-300",
                         isListening && listeningTo === "resume"
                           ? "bg-red-50 text-red-600 border-red-200 animate-pulse"
-                          : ""
+                          : "",
                       )}
                     >
                       {isListening && listeningTo === "resume" ? (
@@ -305,7 +303,7 @@ export const Setup = () => {
                       "transition-all duration-300",
                       isListening && listeningTo === "jobDesc"
                         ? "bg-red-50 text-red-600 border-red-200 animate-pulse"
-                        : ""
+                        : "",
                     )}
                   >
                     {isListening && listeningTo === "jobDesc" ? (

@@ -13,7 +13,8 @@ export const URLS = {
     SETUP: "/setup",
     SYSTEM_DESIGN: "/system-design",
     REFERRAL_ENGINE: "/referral-engine",
-    SURVIVAL_KIT: "/survival-kit",
+    POST_INTERVIEW_GAME: "/post-interview-game",
+    PRE_INTERVIEW: "/pre-interview",
   },
 };
 

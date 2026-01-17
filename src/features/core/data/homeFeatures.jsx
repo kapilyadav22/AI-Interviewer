@@ -14,7 +14,7 @@ import {
   Bookmark,
   Shield,
   Camera,
-} from "lucide-react";
+} from "../../../shared/components/Icons";
 
 export const HOME_FEATURES = [
   {

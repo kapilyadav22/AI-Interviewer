@@ -4,7 +4,7 @@ export class OpenAIService {
   constructor(apiKey) {
     this.openai = new OpenAI({
       apiKey: apiKey,
-      dangerouslyAllowBrowser: true // Required for client-side usage
+      dangerouslyAllowBrowser: true
     });
     this.history = [];
   }

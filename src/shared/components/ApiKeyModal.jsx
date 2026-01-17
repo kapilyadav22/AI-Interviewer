@@ -1,30 +1,32 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { createPortal } from "react-dom";
-import { Key, X, Check, AlertCircle, ExternalLink, Copy } from "lucide-react";
+import { Key, X, Check, AlertCircle, ExternalLink, Copy } from "./Icons";
 import { cn } from "../utils/cn";
 import { config } from "../../config";
 
 export const ApiKeyModal = ({ open, onClose }) => {
   const [apiKey, setApiKey] = useState(
-    localStorage.getItem("gemini_api_key") || config.geminiApiKey || ""
+    localStorage.getItem("gemini_api_key") || config.geminiApiKey || "",
   );
   const [showKey, setShowKey] = useState(false);
   const [saved, setSaved] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const handleSave = () => {
-    if (apiKey.trim()) {
-      localStorage.setItem("gemini_api_key", apiKey.trim());
-      setSaved(true);
-      setTimeout(() => {
-        setSaved(false);
-        onClose();
-      }, 1500);
+    const trimmedKey = apiKey.trim();
+    if (trimmedKey) {
+      localStorage.setItem("gemini_api_key", trimmedKey);
+    } else {
+      localStorage.removeItem("gemini_api_key");
     }
+    setSaved(true);
+    setTimeout(() => {
+      setSaved(false);
+      onClose();
+    }, 1500);
   };
 
   const handleClear = () => {
-    localStorage.removeItem("gemini_api_key");
     setApiKey("");
   };
 
@@ -44,7 +46,6 @@ export const ApiKeyModal = ({ open, onClose }) => {
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden transform animate-in zoom-in-95 duration-200 border border-slate-200 dark:border-slate-800">
-        {/* Header */}
         <div className="px-6 py-5 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-gradient-to-r from-emerald-50 to-primary-50 dark:from-emerald-950/30 dark:to-primary-950/30">
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-white rounded-xl shadow-sm">
@@ -68,7 +69,6 @@ export const ApiKeyModal = ({ open, onClose }) => {
         </div>
 
         <div className="p-6 space-y-5">
-          {/* Info Alert */}
           <div className="flex items-start gap-3 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-2xl">
             <AlertCircle
               size={20}
@@ -93,7 +93,6 @@ export const ApiKeyModal = ({ open, onClose }) => {
             </div>
           </div>
 
-          {/* Input Section */}
           <div className="space-y-3">
             <label className="block text-sm font-bold text-slate-700 dark:text-slate-300">
               Gemini API Key
@@ -133,35 +132,34 @@ export const ApiKeyModal = ({ open, onClose }) => {
             </div>
           </div>
 
-          {/* Action Buttons */}
           <div className="flex gap-3 pt-2">
             <button
               onClick={handleSave}
-              disabled={!apiKey.trim() || saved}
+              disabled={saved}
               className={cn(
                 "flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold text-sm shadow-lg transition-all",
                 saved
                   ? "bg-emerald-500 text-white shadow-emerald-200"
-                  : apiKey.trim()
-                  ? "bg-gradient-to-r from-emerald-600 to-primary-600 hover:from-emerald-700 hover:to-primary-700 text-white shadow-emerald-200 dark:shadow-emerald-900/30 active:scale-95"
-                  : "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed shadow-none"
+                  : "bg-gradient-to-r from-emerald-600 to-primary-600 hover:from-emerald-700 hover:to-primary-700 text-white shadow-emerald-200 dark:shadow-emerald-900/30 active:scale-95",
               )}
             >
               {saved ? (
                 <>
                   <Check size={18} /> Saved Successfully!
                 </>
-              ) : (
+              ) : apiKey.trim() ? (
                 "Save API Key"
+              ) : (
+                "Clear & Save Changes"
               )}
             </button>
 
-            {apiKey && !saved && (
+            {apiKey && (
               <button
                 onClick={handleClear}
                 className="px-5 py-3.5 rounded-xl font-bold text-sm text-red-600 hover:bg-red-50 border-2 border-red-200 hover:border-red-300 transition-all"
               >
-                Clear
+                Reset Field
               </button>
             )}
           </div>

@@ -1,4 +1,3 @@
-import React from 'react';
 import { PeerLobby } from '../components/PeerLobby';
 import { Header } from '../../../shared/components/Header';
 

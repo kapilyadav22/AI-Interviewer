@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { Layout } from "../../../shared/components/Layout";
 import { Card, CardHeader, CardBody } from "../../../shared/components/Card";
@@ -8,11 +8,19 @@ import { OpenAIService } from "../../../shared/services/openai";
 import {
   saveInterview,
   uploadRecording,
-} from "../../../shared/services/supabase";
+} from "../../../shared/services/firebase";
 import { useAuth } from "../../../shared/context/AuthContext";
-import { Download, RefreshCw, Home, Save, Loader2 } from "lucide-react";
+import {
+  Download,
+  RefreshCw,
+  Home,
+  Save,
+  Loader2,
+} from "../../../shared/components/Icons";
 import ReactMarkdown from "react-markdown";
 import { useToast } from "../../../shared/context/ToastContext";
+import { ApiKeyModal } from "../../../shared/components/ApiKeyModal";
+import { AuthWarningModal } from "../../../shared/components/AuthWarningModal";
 
 export const Feedback = () => {
   const location = useLocation();
@@ -21,6 +29,8 @@ export const Feedback = () => {
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [showApiKeyModal, setShowApiKeyModal] = useState(false);
+  const [showAuthWarning, setShowAuthWarning] = useState(false);
   const { user } = useAuth();
   const { showToast } = useToast();
 
@@ -34,6 +44,12 @@ export const Feedback = () => {
 
       const provider = localStorage.getItem("ai_provider") || "gemini";
       const apiKey = localStorage.getItem(`${provider}_api_key`);
+
+      if (!apiKey) {
+        setLoading(false);
+        setShowAuthWarning(true);
+        return;
+      }
 
       let service;
       if (provider === "openai") {
@@ -93,7 +109,6 @@ export const Feedback = () => {
       showToast("Interview saved successfully!", "success");
       navigate("/history");
     } catch (error) {
-      // DEBUG: console.error("Save Error:", error);
       showToast("Failed to save interview: " + error.message, "error");
     } finally {
       setSaving(false);
@@ -102,6 +117,18 @@ export const Feedback = () => {
 
   return (
     <Layout>
+      <AuthWarningModal
+        open={showAuthWarning}
+        onClose={() => setShowAuthWarning(false)}
+        onConfigure={() => {
+          setShowAuthWarning(false);
+          setShowApiKeyModal(true);
+        }}
+      />
+      <ApiKeyModal
+        open={showApiKeyModal}
+        onClose={() => setShowApiKeyModal(false)}
+      />
       <div className="max-w-4xl mx-auto space-y-8">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
@@ -135,7 +162,6 @@ export const Feedback = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="md:col-span-2 space-y-6">
-            {/* Ratings Card */}
             {analysis?.ratings && (
               <Card>
                 <CardHeader>
@@ -178,7 +204,7 @@ export const Feedback = () => {
                           {Math.round(
                             location.state.speechStats.totalWords /
                               (location.state.speechStats.speakingTime / 60) ||
-                              0
+                              0,
                           )}
                         </div>
                         <div className="text-sm text-slate-600 dark:text-slate-300">
@@ -198,7 +224,7 @@ export const Feedback = () => {
                       <strong>Tip:</strong>
                       {Math.round(
                         location.state.speechStats.totalWords /
-                          (location.state.speechStats.speakingTime / 60) || 0
+                          (location.state.speechStats.speakingTime / 60) || 0,
                       ) > 160
                         ? " You might be speaking a bit too fast. Try to slow down to ensure clarity."
                         : " Your pacing looks good! Aim for 130-150 WPM for optimal clarity."}

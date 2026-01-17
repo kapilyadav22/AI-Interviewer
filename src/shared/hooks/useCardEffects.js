@@ -1,4 +1,4 @@
-import { useMotionValue, useMotionTemplate, useSpring } from "framer-motion";
+import { useMotionValue, useMotionTemplate, useSpring } from "motion/react";
 import { useTheme } from "../context/ThemeContext";
 
 export const useCardEffects = ({
@@ -10,7 +10,6 @@ export const useCardEffects = ({
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  // 3D Tilt Values
   const rotateX = useSpring(0, { stiffness: 150, damping: 15 });
   const rotateY = useSpring(0, { stiffness: 150, damping: 15 });
 
@@ -45,13 +44,11 @@ export const useCardEffects = ({
   function handleMouseMove({ currentTarget, clientX, clientY }) {
     const { left, top, width, height } = currentTarget.getBoundingClientRect();
 
-    // Spotlight calculation
     const x = clientX - left;
     const y = clientY - top;
     mouseX.set(x);
     mouseY.set(y);
 
-    // Tilt calculation
     const centerX = width / 2;
     const centerY = height / 2;
 

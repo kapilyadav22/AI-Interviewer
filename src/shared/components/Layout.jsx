@@ -1,4 +1,3 @@
-import React from 'react';
 import { Header } from './Header';
 import { Linkedin, Twitter, Github } from 'lucide-react';
 import { config } from '../../config';

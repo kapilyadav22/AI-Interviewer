@@ -1,69 +1,77 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '../services/supabase';
+import { createContext, useContext, useEffect, useState } from "react";
+import {
+  auth,
+  createUser,
+  signIn as firebaseSignIn,
+  signOut as firebaseSignOut,
+  signInWithGoogle as firebaseSignInWithGoogle,
+  onAuthChange,
+} from "../services/firebase";
 
 const AuthContext = createContext({});
 
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
-    const [session, setSession] = useState(null);
-    const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        // Check active session with timeout
-        const checkSession = async () => {
-            try {
-                // Create a timeout promise
-                const timeoutPromise = new Promise((_, reject) => {
-                    setTimeout(() => reject(new Error('Auth session check timed out')), 2000);
-                });
-
-                // Race between session check and timeout
-                const { data } = await Promise.race([
-                    supabase.auth.getSession(),
-                    timeoutPromise
-                ]);
-
-                if (data?.session) {
-                    setSession(data.session);
-                    setUser(data.session.user ?? null);
-                }
-            } catch (error) {
-                // DEBUG: console.warn('Auth initialization skipped or failed:', error.message);
-                // Don't block app on auth failure
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        checkSession();
-
-        // Listen for changes
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-            setSession(session);
-            setUser(session?.user ?? null);
-            setLoading(false);
+  useEffect(() => {
+    const unsubscribe = onAuthChange((firebaseUser) => {
+      if (firebaseUser) {
+        setUser({
+          id: firebaseUser.uid,
+          email: firebaseUser.email,
+          displayName: firebaseUser.displayName,
+          photoURL: firebaseUser.photoURL,
+          ...firebaseUser,
         });
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
+    });
 
-        return () => subscription.unsubscribe();
-    }, []);
+    if (!auth) {
+      setLoading(false);
+    }
 
-    const signUp = (email, password) => {
-        return supabase.auth.signUp({ email, password });
-    };
+    return () => unsubscribe();
+  }, []);
 
-    const signIn = (email, password) => {
-        return supabase.auth.signInWithPassword({ email, password });
-    };
+  const signUp = async (email, password) => {
+    const result = await createUser(email, password);
+    return { data: result, error: null };
+  };
 
-    const signOut = () => {
-        return supabase.auth.signOut();
-    };
+  const signIn = async (email, password) => {
+    const result = await firebaseSignIn(email, password);
+    return { data: result, error: null };
+  };
 
-    return (
-        <AuthContext.Provider value={{ user, session, signUp, signIn, signOut, loading }}>
-            {!loading && children}
-        </AuthContext.Provider>
-    );
+  const signInWithGoogle = async () => {
+    const result = await firebaseSignInWithGoogle();
+    return { data: result, error: null };
+  };
+
+  const signOut = async () => {
+    await firebaseSignOut();
+    return { error: null };
+  };
+
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        session: user,
+        signUp,
+        signIn,
+        signInWithGoogle,
+        signOut,
+        loading,
+      }}
+    >
+      {!loading && children}
+    </AuthContext.Provider>
+  );
 };

@@ -1,3 +1,4 @@
+#!/bin/sh
 
 echo "window.env = {" > /usr/share/nginx/html/env-config.js
 

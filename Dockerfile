@@ -42,7 +42,7 @@ CMD ["nginx", "-g", "daemon off;"]
 #docker save -o mc-frontend.tar mc-frontend:v2
 #scp mc-frontend.tar target_machine
 #docker load -i mc-frontend.tar
-#docker compose stop frontend
-#docker compose up --build -d frontend
+#docker compose stop frontendmc
+#docker compose up --build -d frontendmc
 
-#docker compose stop frontend && docker compose rm -f frontend && docker compose up --build -d frontend
+#docker compose stop frontendmc && docker compose rm -f frontendmc && docker compose up --build -d frontendmc

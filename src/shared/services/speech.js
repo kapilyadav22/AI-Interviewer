@@ -13,12 +13,10 @@ export class SpeechService {
   }
 
   speak(text, onEnd) {
-    // Cancel any ongoing speech
     this.synthesis.cancel();
 
     const utterance = new SpeechSynthesisUtterance(text);
 
-    // Load settings
     const savedVoiceURI = localStorage.getItem("speech_voice_uri");
     const savedRate = localStorage.getItem("speech_rate");
     const savedPitch = localStorage.getItem("speech_pitch");
